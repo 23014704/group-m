@@ -1,64 +1,74 @@
-# Budgeting Application
+Personal Budgeting & Financial Calculations Application
+Overview
+This Java-based command-line application helps users manage their personal budget by tracking monthly income, expenses, and loans (home and vehicle). The application calculates key financial aspects, such as total expenses, loan repayments, and provides warnings when expenses exceed a recommended threshold.
 
-This is a simple Java console application that helps users manage their monthly income and expenses. The program calculates the total expenses, sorts them in descending order, and checks if the total expenses exceed 75% of the user's income.
+Features
+Track Monthly Expenses: Capture essential monthly expenses like groceries, utilities, transport, phone bills, etc.
+Home Loan Calculation: Automatically calculate the monthly home loan repayment based on user inputs (purchase price, deposit, interest rate).
+Vehicle Loan Calculation: Calculate vehicle loan repayments, including insurance, based on user inputs.
+Expense Sorting: Sorts expenses from highest to lowest for easy financial visualization.
+Warnings: Provides warnings when:
+Home loan repayment exceeds one-third of the user's gross income.
+Total expenses exceed 75% of the user's gross income.
+Remaining Income Calculation: Shows the remaining disposable income after all expenses and deductions.
+Technologies Used
+Java 8 or later
+Java Scanner for user input
+Java ArrayList for storing and managing expenses
+Object-oriented design using inheritance and abstract classes
+How It Works
+Input Monthly Income & Expenses: The application prompts the user to input their gross income and various expense categories (e.g., groceries, utilities).
 
-### Features:
-- Collects user's monthly income.
-- Allows the user to input regular living expenses.
-- Provides an option to enter vehicle financing details if the user chooses to buy a vehicle.
-- Calculates the total monthly cost for vehicle financing (including loan repayment and insurance).
-- Displays the user's expenses in descending order.
-- Warns the user if their total expenses exceed 75% of their income.
+Choose Accommodation Type: The user selects either renting or buying a home. If buying, the application asks for home loan details and calculates the monthly repayment.
 
-## How to Compile and Run the Program
+Vehicle Loan Option: Users can choose to input details for purchasing a vehicle. The application calculates the vehicle loan and insurance costs and adds them to the total expenses.
 
-### Prerequisites:
-- You need to have the **Java Development Kit (JDK)** installed on your machine.
-  - [Download the JDK here](https://www.oracle.com/java/technologies/javase-downloads.html)
-- Make sure the `javac` and `java` commands are available in your terminal or command prompt.
+Warnings & Financial Summary: After all inputs are collected, the application checks if expenses are within reasonable limits and issues warnings if necessary. It also provides a summary of expenses and available remaining income.
 
-### Step-by-Step Instructions:
+Prerequisites
+To run this application, ensure you have:
 
-#### 1. Compile the Program
-
-- Open a terminal (command prompt) and navigate to the folder where the source code file `BudgetingApp.java` is located.
-- Run the following command to compile the Java source file:
-
-    ```bash
-    javac BudgetingApp.java
-    ```
-
-- This will generate a `BudgetingApp.class` file in the same directory.
-
-#### 2. Run the Program
-
-- After successful compilation, run the program using the following command:
-
-    ```bash
-    java BudgetingApp
-    ```
-
-- The program will prompt you to enter your monthly income and expenses step by step.
-- If you choose to buy a vehicle, it will ask for details such as the model, purchase price, deposit, interest rate, and insurance premium.
-
-#### 3. Example Interaction:
-Enter your monthly income: 20000 Enter your total monthly living expenses (utilities, groceries, etc.): 8000 Would you like to buy a vehicle? (yes/no): yes Enter the vehicle model and make: Toyota Corolla Enter the vehicle purchase price: R300000 Enter the total deposit: R50000 Enter the interest rate (percentage): 8 Enter the estimated monthly insurance premium: R1200 Total monthly cost for the vehicle (loan + insurance): R6170.52
-
-Expenses (sorted in descending order): Living Expenses: R8000.0 Vehicle Financing: R6170.52
-
-Warning: Your total expenses exceed 75% of your income!
-
-
-### Notes:
-- Make sure to follow the prompts and input correct values for each question.
-- You can modify the program as needed or extend it to handle additional types of expenses or loans.
-
-### Developer Notes:
-- The vehicle loan repayment is calculated assuming a 5-year loan term and fixed interest rate.
-- The program sorts all expenses in descending order, so the most significant expense is displayed first.
-
-### Additional Information:
-- The source code is written in standard Java and requires JDK version 8 or later to compile and run.
-- No external libraries are needed.
-
-
+Java Development Kit (JDK) version 8 or above installed on your machine.
+A code editor like NetBeans or Eclipse for editing and running the program.
+How to Run
+Clone or download the repository to your local machine.
+Open the project in your preferred IDE (e.g., NetBeans or Eclipse).
+Compile and run the Expense2.java file.
+Follow the on-screen prompts to enter your income, expenses, and loan details.
+Sample Run
+text
+Copy code
+Enter your Gross monthly income: 50000
+Enter your Monthly tax deductions: 10000
+Enter your Groceries: 5000
+Enter your Water and lights: 1500
+Enter your Travel costs: 3000
+Enter your Phone expenses: 1000
+Enter your Other expenses: 2000
+Are you renting or buying a property? (rent/buy): buy
+Enter the purchase price of the property: 500000
+Enter the total deposit: 50000
+Enter the interest rate (%): 7
+Monthly home loan repayment: 3141.17
+Are you buying a vehicle? (yes/no): yes
+Enter the purchase price of the vehicle: 200000
+Enter the total deposit for the vehicle: 20000
+Enter the interest rate for the vehicle (%): 9
+Enter the estimated insurance premium: 500
+Total monthly cost of buying the vehicle (loan + insurance): 4243.59
+Available monthly money after deductions: 22315.24
+Expenses in descending order:
+10000.0
+5000.0
+4243.59
+3141.17
+3000.0
+2000.0
+1500.0
+1000.0
+Future Enhancements
+Graphical User Interface (GUI): Future versions may include a GUI to make input and output more user-friendly.
+Expense Analysis: A breakdown of expenses into categories (essential vs non-essential) for better financial management.
+Savings Goals: Add functionality to suggest savings based on income and expense patterns.
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
