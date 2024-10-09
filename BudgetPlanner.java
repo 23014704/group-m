@@ -1,3 +1,4 @@
+package expense2;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -171,3 +172,10 @@ public class Expense2 {
     }
 
     // Method to check if total expenses exceed 75% of gross income and notify the user if they do
+    private static void notifyIfExpensesExceedThreshold(double totalExpenses, double grossIncome) {
+        // If the user's total monthly expenses surpass 75% of their gross income, issue a financial warning
+        if (totalExpenses > grossIncome * 0.75) {
+            System.out.println("Warning: Total monthly expenses exceed 75% of your gross income.");
+        }
+    }
+}
