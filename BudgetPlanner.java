@@ -1,180 +1,279 @@
 
+
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
-// Abstract class representing the structure of a loan, either for a home or vehicle
-abstract class Loan {
-    protected double purchasePrice;  // The total cost of the asset being financed (house or car)
-    protected double deposit;        // The initial payment made upfront, which reduces the loan amount
-    protected double interestRate;   // The annual percentage rate (APR) charged on the loan
-    protected int months;            // The loan term expressed in months, determining how long payments will be made
+// Abstract class for all types of expenses
+abstract class Expense {
+     String category;
+    double amount;
 
-    // Constructor to initialize the key financial details of the loan
-    public Loan(double purchasePrice, double deposit, double interestRate, int months) {
-        this.purchasePrice = purchasePrice;   // Set the total price of the asset
-        this.deposit = deposit;               // Set the deposit amount to reduce the loan size
-        this.interestRate = interestRate;     // Set the annual interest rate applied to the loan balance
-        this.months = months;                 // Set the loan duration (in months) for repayment
+    public Expense(String category, double amount) {
+        category = category;
+        amount = amount;
     }
 
-    // Abstract method to calculate the monthly loan payment, requiring implementation by subclasses
-    public abstract double getAmount();
-}
-
-// HomeLoan class that extends the Loan class, specifically designed for home loan calculations
-class HomeLoan extends Loan {
-    // Constructor that calls the Loan constructor to initialize details specific to a home loan
-    public HomeLoan(double purchasePrice, double deposit, double interestRate, int months) {
-        super(purchasePrice, deposit, interestRate, months);  // Inherit and initialize loan details from Loan class
+    public String getCategory() {
+        return category;
     }
 
-    // Implemented method to calculate the monthly repayment for the home loan using a standard loan formula
     public double getAmount() {
-        double loanAmount = purchasePrice - deposit;  // Calculate the loan principal as the purchase price minus the deposit
-        double monthlyInterestRate = interestRate / 100 / 12;  // Convert annual interest rate to a monthly rate
-        // Calculate the monthly payment using the loan amortization formula
-        return (loanAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -months));
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        amount = amount;
+    }
+
+    public abstract void displayExpense();
+}
+
+// Class for handling home loan-specific expenses
+class HomeLoan extends Expense {
+     double purchasePrice;
+     double deposit;
+     int interestRate;
+     int monthsToRepay;
+    double loanAmount;
+
+    public HomeLoan(double purchasePrice, double deposit, double interestRate, int monthsToRepay) {
+        super("Home Loan", 0);
+       this.purchasePrice = purchasePrice;
+       this.deposit = deposit;
+       interestRate = interestRate;
+       this.monthsToRepay = monthsToRepay;
+       amount  = calculateMonthlyRepayment();
+    }
+
+        double calculateMonthlyRepayment() {
+        double loanAmount = purchasePrice - deposit;
+        double monthlyInterestRate = (interestRate / 100);
+       
+        return loanAmount * (Math.pow(1 + monthlyInterestRate, monthsToRepay));
+    }
+
+     
+    public void displayExpense() {
+        System.out.println("Home Loan Monthly Repayment: " + amount);
     }
 }
 
-// VehicleLoan class that extends the Loan class, specifically designed for vehicle loan calculations
-class VehicleLoan extends Loan {
-    // Constructor that sets the loan details for vehicle financing with a fixed term of 60 months (5 years)
-    public VehicleLoan(double purchasePrice, double deposit, double interestRate) {
-        super(purchasePrice, deposit, interestRate, 60);  // Fixed loan term of 60 months for vehicle loans
+// Class for handling rent expenses
+class Rent extends Expense {
+    public Rent(double rentAmount) {
+        super("Rent", rentAmount);
+        amount = rentAmount;
     }
 
-    // Implemented method to calculate the monthly repayment for the vehicle loan using a standard loan formula
-    public double getAmount() {
-        double loanAmount = purchasePrice - deposit;  // Calculate the loan principal by subtracting the deposit from the purchase price
-        double monthlyInterestRate = interestRate / 100 / 12;  // Convert annual interest rate to a monthly rate
-        // Use the loan amortization formula to calculate the monthly repayment
-        return (loanAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -months));
+    public void displayExpense() {
+        System.out.println("Monthly Rent: " + amount);
     }
 }
 
-// Main class to handle the user's personal budgeting and loan calculations
-public class Expense2 {
+// Class for handling other simple expenses like groceries, etc.
+class SimpleExpense extends Expense {
+    public SimpleExpense(String category, double amount) {
+        super(category, amount);
+    }
 
+   
+    public void displayExpense() {
+        System.out.println(category + ": " + amount);
+    }
+}
+
+// Class for handling vehicle expenses
+class VehicleExpense extends Expense {
+    String modelAndMake;
+    double purchasePrice;
+    double totalDeposit;
+    int interestRate;
+    double insurancePremium;
+
+    public VehicleExpense(String modelAndMake, double purchasePrice, double totalDeposit, double interestRate, double insurancePremium) {
+        super("Vehicle", 0);
+        this.modelAndMake = modelAndMake;
+        this.purchasePrice = purchasePrice;
+        this.totalDeposit = totalDeposit;
+        interestRate = interestRate;
+       this. insurancePremium = insurancePremium;
+        amount = calculateMonthlyRepayment();
+    }
+
+
+    
+
+     double calculateMonthlyRepayment() {
+        double loanAmount = purchasePrice - totalDeposit ;
+        double monthlyInterestRate = (interestRate / 100) ;
+        return loanAmount * ( Math.pow(1 + monthlyInterestRate, 60)) + insurancePremium;
+        
+     
+     }
+    public void displayExpense() {
+        System.out.println("Vehicle Monthly Repayment: " + amount);
+        
+    }
+    
+}
+
+// Main class for managing the budget and expense details
+public class BudgetPlanner {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);  // Initialize the scanner to capture user input
-        ArrayList<Double> expenses = new ArrayList<>();  // Create a list to store all user expenses for later calculations
+        Scanner scanner = new Scanner(System.in);
 
-        // Define the categories of monthly expenses that the user will provide input for
-        String[] expenseCategories = {
-            "Gross monthly income",   // Total pre-tax income earned each month
-            "Monthly tax deductions", // Amount deducted from gross income for taxes
-            "Groceries",              // Money spent on food and household supplies
-            "Water and lights",       // Utility costs for water and electricity
-            "Travel costs",           // Money spent on transportation, including fuel or public transport
-            "Phone expenses",         // Monthly phone or mobile data costs
-            "Other expenses"          // Any other miscellaneous expenses
-        };
+        // Input gross income and tax
+        
+        System.out.println("Enter your gross monthly income: ");
+        double grossIncome = scanner.nextDouble();
+        
+        System.out.println("Enter estimated monthly tax(IN PERCENTAGE): ");
+        int tax = scanner.nextInt();
 
-        // Loop through each expense category and ask the user to input their corresponding monthly costs
-        for (String category : expenseCategories) {
-            System.out.print("Enter your " + category + ": ");
-            expenses.add(scanner.nextDouble());  // Collect and store the user input as a double value in the expenses list
-        }
+        // Input basic monthly expenses
+        
+        System.out.println("Enter monthly groceries expense: ");
+        double groceries = scanner.nextDouble();
+        
+        System.out.println("Enter monthly water and lights expense: ");
+        double waterLights = scanner.nextDouble();
+        
+        System.out.println("Enter monthly travel expense: ");
+        double travel = scanner.nextDouble();
+        
+        System.out.println("Enter monthly phone expense: ");
+        double cellPhone = scanner.nextDouble();
+        
+        System.out.println("Enter any other monthly expenses: ");
+        double other = scanner.nextDouble();
 
-        double grossIncome = expenses.get(0);  // The first entry in the list is the user's gross monthly income
-        double tax = expenses.get(1);  // The second entry is the user's tax deductions
-        double totalExpenses = 0;  // Initialize the total monthly expenses, which will be calculated later
+        // Create a ArrayList to store expenses
+        
+         ArrayList<String> expenses = new ArrayList<>();
+        expenses.add("Groceries: " + groceries);
+        expenses.add("Water and Lights: " + waterLights);
+        expenses.add("Travel: " + travel);
+        expenses.add("Cell Phone: " + cellPhone);
+        expenses.add("Other: " + other);
 
-        // Sum all non-income and non-tax expenses (starting from index 2) to calculate total expenses
-        for (int i = 2; i < expenses.size(); i++) {
-            totalExpenses += expenses.get(i);
-        }
-
-        // Ask the user if they are buying or renting a property
-        System.out.print("Are you renting or buying a property? (rent/buy): ");
-        String accommodation = scanner.next();
-
-        // If the user is buying a property, collect home loan details and calculate the loan repayment
-        if (accommodation.equalsIgnoreCase("buy")) {
-            System.out.print("Enter the purchase price of the property: ");  // Collect the property price
+        
+        // Rent or Buy decision
+        System.out.println("Do you want to rent or buy a property? (rent/buy): ");
+        String decision = scanner.next();
+        Expense homeExpense = null;
+        switch (decision){
+            
+           case "rent" :
+               
+            System.out.println("Enter your monthly rent: ");
+            double rentAmount = scanner.nextDouble();
+            homeExpense = new Rent(rentAmount);
+            
+         break;   
+            
+           case "buy":
+        
+            System.out.println("Enter property purchase price: ");
             double purchasePrice = scanner.nextDouble();
-
-            System.out.print("Enter the total deposit: ");  // Collect the down payment amount
+            
+            System.out.println("Enter total deposit: ");
             double deposit = scanner.nextDouble();
-
-            System.out.print("Enter the interest rate (%): ");  // Collect the annual interest rate
-            double interestRate = scanner.nextDouble();
-
-            // Create a HomeLoan object with a fixed term of 360 months (30 years) and calculate the repayment
-            HomeLoan homeLoan = new HomeLoan(purchasePrice, deposit, interestRate, 360);
-            double monthlyRepayment = homeLoan.getAmount();  // Calculate the monthly home loan repayment
-            System.out.println("Monthly home loan repayment: " + monthlyRepayment);
-
-            // Check if the home loan repayment exceeds one-third of the user's gross monthly income
-            if (monthlyRepayment > (grossIncome / 3)) {
-                System.out.println("Warning: Home loan repayment is more than a third of your gross income.");
-            }
-
-            // Add the monthly home loan repayment to the user's total monthly expenses
-            totalExpenses += monthlyRepayment;
-            expenses.add(monthlyRepayment);  // Include the repayment in the list of expenses
-        } else {
-            // If the user is renting, collect the monthly rental amount and add it to their total expenses
-            System.out.print("Enter your monthly rental amount: ");
-            double rent = scanner.nextDouble();
-            totalExpenses += rent;  // Add the rental amount to total monthly expenses
-            expenses.add(rent);  // Store the rental amount in the expenses list
+            
+            System.out.println("Enter interest rate (IN PERCENTAGE): ");
+            int interestRate = scanner.nextInt();
+            
+            System.out.println("Enter number of months to repay (between 240 and 360): ");
+            int monthsToRepay = scanner.nextInt();
+            
+            homeExpense = new HomeLoan(purchasePrice,deposit,interestRate,monthsToRepay);
+         break;   
+            
+            
+           default:{
+               System.out.println("Error!Please Enter rent or buy");
+           }
         }
+                
+                
 
-        // Ask the user if they are purchasing a vehicle and gather relevant loan details if applicable
-        System.out.print("Are you buying a vehicle? (yes/no): ");
-        String buyVehicle = scanner.next();
 
-        // If the user is buying a vehicle, collect vehicle loan and insurance details to calculate total monthly costs
-        if (buyVehicle.equalsIgnoreCase("yes")) {
-            System.out.print("Enter the purchase price of the vehicle: ");  // Collect the vehicle price
+        // Vehicle purchase decision
+        System.out.println("Do you want to buy a vehicle? (yes/no): ");
+        String vehicleDecision = scanner.next();
+         Expense vehicleExpense = null;
+        
+        switch (vehicleDecision) {
+        
+            case "yes":
+            System.out.println("Enter vehicle model and make: ");
+            String modelAndMake = scanner.next();
+            
+            System.out.println("Enter vehicle purchase price: ");
             double vehiclePurchasePrice = scanner.nextDouble();
-
-            System.out.print("Enter the total deposit for the vehicle: ");  // Collect the vehicle deposit amount
+            
+            System.out.println("Enter total deposit: ");
             double vehicleDeposit = scanner.nextDouble();
-
-            System.out.print("Enter the interest rate for the vehicle (%): ");  // Collect the annual interest rate
-            double vehicleInterestRate = scanner.nextDouble();
-
-            System.out.print("Enter the estimated insurance premium: ");  // Collect the monthly insurance premium
+            
+            System.out.println("Enter interest rate (IN PERCENTAGE): ");
+            int vehicleInterestRate = scanner.nextInt();
+            
+            System.out.println("Enter estimated insurance premium: ");
             double insurancePremium = scanner.nextDouble();
+            
+            vehicleExpense = new VehicleExpense(modelAndMake, vehiclePurchasePrice, vehicleDeposit, vehicleInterestRate, insurancePremium);
+       break;
+             
+             case"no":
+                 
+                 break;
+              
+             default:{
+                 System.out.println("Error! Please Enter yes or no");
+             }
+              }
+// Sort expenses in descending order
+expenses.sort((a, b) -> Double.compare(Double.parseDouble(b.split(": ")[1]), Double.parseDouble(a.split(": ")[1])));
 
-            // Create a VehicleLoan object and calculate the monthly loan repayment
-            VehicleLoan vehicleLoan = new VehicleLoan(vehiclePurchasePrice, vehicleDeposit, vehicleInterestRate);
-            double vehicleMonthlyRepayment = vehicleLoan.getAmount();
-
-            // Calculate the total monthly cost for the vehicle, including both the loan repayment and insurance
-            double totalVehicleCost = vehicleMonthlyRepayment + insurancePremium;
-            System.out.println("Total monthly cost of buying the vehicle (loan + insurance): " + totalVehicleCost);
-
-            // Add the total vehicle costs (loan and insurance) to the user's overall monthly expenses
-            totalExpenses += totalVehicleCost;
-            expenses.add(totalVehicleCost);  // Store the total vehicle costs in the expenses list
-        }
-
-        // Check if the total monthly expenses exceed 75% of the user's gross income and issue a warning if true
-        notifyIfExpensesExceedThreshold(totalExpenses, grossIncome);
-
-        // Calculate the user's remaining money after all taxes and expenses have been deducted from gross income
-        double availableMoney = grossIncome - tax - totalExpenses;
-        System.out.println("Available monthly money after deductions: " + availableMoney);
-
-        // Sort the expenses in descending order (highest to lowest) for clearer financial visualization
-        expenses.sort((a, b) -> Double.compare(b, a));  // Use a comparator to sort the expenses from highest to lowest
-        System.out.println("Expenses in descending order:");
-        for (double expense : expenses) {
-            System.out.println(expense);  // Print each expense in descending order
-        }
-
-        scanner.close();  // Close the scanner to prevent resource leaks
-    }
-
-    // Method to check if total expenses exceed 75% of gross income and notify the user if they do
-    private static void notifyIfExpensesExceedThreshold(double totalExpenses, double grossIncome) {
-        // If the user's total monthly expenses surpass 75% of their gross income, issue a financial warning
-        if (totalExpenses > grossIncome * 0.75) {
-            System.out.println("Warning: Total monthly expenses exceed 75% of your gross income.");
-        }
-    }
+    
+// Calculate total expenses
+double totalExpenses = 0.0;
+for (String expense : expenses) {
+    String[] parts = expense.split(": ");
+    double amount = Double.parseDouble(parts[1]);
+    totalExpenses += amount;
+    System.out.println("Expense: " + parts[0] + " R " + amount); 
 }
+
+// displaying home loan monthly repayment
+ if (homeExpense != null){
+     homeExpense.displayExpense();
+}   
+
+// displaying vehicle monthly repayment
+if (vehicleExpense != null) {
+    vehicleExpense.displayExpense();
+}
+
+// Calculate remaining amount and diplaying total expenses
+System.out.println("Total Expense:" + totalExpenses);
+double remainingAmount = grossIncome - totalExpenses;
+System.out.println("Gross Income: " + grossIncome);
+System.out.println("Remaining Amount: " + remainingAmount);
+
+
+// Check if total expenses exceed 75% of gross income
+if (totalExpenses > grossIncome * 0.75) {
+    System.out.println("Warning: Total expenses exceed 75% of gross income!");
+
+        }
+    }
+        }
+
+
+
+    
+    
+
+
+
